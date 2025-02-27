@@ -6,14 +6,9 @@ data = pd.read_csv('data/CUSTOM_TABLE.csv', low_memory=False)
 # Ensure column names are stripped of extra spaces
 data.columns = data.columns.str.strip()
 
-# Print the number of rows
-print(f"Before filtering: \n\
-        {data.shape[0]} \n\
-        ")
-
-# Print the number of rows after filtering
-print(f"After filtering: \n\
-        {data.shape[0]} \n\
+# Print the number of unique subjects
+print(f"Number of unique subjects: \n\
+      {data['subject_id'].nunique()} \n\
         ")
 
 # Ensure at least one of the WORD columns (WORD1, WORD2, WORD3) is present
@@ -42,9 +37,9 @@ mmltr_conditions = data[mmltr_cols].notnull().all(axis=1)
 # Apply both conditions
 data = data[mmse_conditions | mmltr_conditions]
 
-# Print the number of rows after filtering
+# Print the number of unique subjects after filtering
 print(f"After MMSE filtering: \n\
-        {data.shape[0]} \n\
+        {data['subject_id'].nunique()}  \n\
         ")
 
 # Remove individuals with missing values for critical fields
@@ -55,6 +50,11 @@ data = data.dropna(subset=required_columns)
 visit_counts = data.groupby('subject_id').size()
 valid_subjects = visit_counts[visit_counts >= 2].index
 data = data[data['subject_id'].isin(valid_subjects)]
+
+# Print the number of unique subjects after filtering
+print(f"After additional filtering: \n\
+        {data['subject_id'].nunique()}  \n\
+        ")
 
 # Save the filtered data to a new CSV file
 data.to_csv('data/CUSTOM_TABLE_FILTERED.csv', index=False)

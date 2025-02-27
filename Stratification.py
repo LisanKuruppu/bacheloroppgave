@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 # Load the CSV data
 df = pd.read_csv("data/CUSTOM_TABLE_FILTERED.csv")
 
-# ---------------------------
 # Aggregate to Unique Patients
-# ---------------------------
+
+
 # Assuming that a lower "visit" value corresponds to the baseline,
 # sort by 'visit' and take the first entry for each patient (subject_id)
 df_unique = df.sort_values('visit').groupby('subject_id', as_index=False).first()
@@ -15,9 +15,7 @@ df_unique = df.sort_values('visit').groupby('subject_id', as_index=False).first(
 print("Unique patient data (first visit per patient):")
 print(df_unique.head())
 
-# ---------------------------
 # 1. Demographic Stratification
-# ---------------------------
 # Create age groups based on 'subject_age'
 age_bins = [0, 65, 70, 80, 100]  # Adjust these as appropriate for your data
 age_labels = ['<65', '70-75', '75-80', '80+']
@@ -38,9 +36,7 @@ plt.xticks(rotation=0)
 plt.tight_layout()
 plt.show()
 
-# ---------------------------
 # 2. Clinical Stratification
-# ---------------------------
 # Group by clinical variables: DIAGNOSIS and CDR score (CDGLOBAL)
 clinical_strata = df.groupby(['DIAGNOSIS', 'CDGLOBAL']).size().reset_index(name='count')
 
@@ -59,9 +55,7 @@ for ax, diag in zip(axes.flatten(), diagnoses):
 plt.tight_layout()
 plt.show()
 
-# ---------------------------
 # 3. Additional Stratification
-# ---------------------------
 # Stratification by GENOTYPE (APOE)
 if 'GENOTYPE' in df.columns:
     genotype_strata = df.groupby('GENOTYPE').size().reset_index(name='count')
@@ -89,9 +83,7 @@ if 'ABETA42' in df.columns:
     plt.tight_layout()
     plt.show()
 
-# ---------------------------
 # 4. Stratification by MMSE Score
-# ---------------------------
 # Create a new column that categorizes MMSCORE into two groups: '>=24' and '<24'
 # Ensure MMSCORE is numeric; if not, convert it (and handle errors as needed)
 df['MMSCORE'] = pd.to_numeric(df['MMSCORE'], errors='coerce')
