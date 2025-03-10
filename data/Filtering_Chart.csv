@@ -1,0 +1,14 @@
+Step,Unique Subjects
+Initial Count,922
+MMSE Score Filter,922
+WORD Filter,922
+MMSE Completeness Filter,680
+Missing Age Filter,680
+Missing Gender Filter,680
+Missing CDRGLOBAL Filter,680
+Missing GENOTYPE Filter,680
+Missing Diagnosis Filter,679
+Missing Scan Filter,633
+Missing Field Strength Filter,513
+Multiple Visits Filter,440
+After Alzheimer Group Splitting,320
