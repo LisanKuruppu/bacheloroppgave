@@ -9,8 +9,7 @@ class MMSE_LlamaProcessor:
 
     def ask_mmse_question(self, question):
         """Ask MMSE question to the model."""
-        promt = f"Question: {question} \n\
-                Answer:"
+        promt = f"Question: {question} \nAnswer:"
         response = self.pipeline(promt, max_length=50, do_sample=True)[0]["generated_text"]
         return response.split("Answer:")[-1].strip()
     
