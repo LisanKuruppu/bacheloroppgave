@@ -1,14 +1,3 @@
-Step,Unique Subjects
-Initial Count,922
-MMSE Score Filter,922
-WORD Filter,922
-MMSE Completeness Filter,680
-Missing Age Filter,680
-Missing Gender Filter,680
-Missing CDRGLOBAL Filter,680
-Missing GENOTYPE Filter,680
-Missing Diagnosis Filter,679
-Missing Scan Filter,633
-Missing Field Strength Filter,513
-Multiple Visits Filter,440
-After Alzheimer Group Splitting,320
+version https://git-lfs.github.com/spec/v1
+oid sha256:81e6a13aed1301ab66248f71049b5badaff168390bfca4e3612c09e2dae0d84a
+size 362
