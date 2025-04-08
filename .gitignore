@@ -176,3 +176,5 @@ cython_debug/
 # Ignore Large CSV-files
 data/MMSE_Prompts_Test.csv
 data/MMSE_Prompts_Train.csv
+data/MMSE_Context_Prompts_Test.csv
+data/MMSE_Context_Prompts_Train.csv
