@@ -5,12 +5,13 @@ from sklearn.metrics import roc_auc_score, balanced_accuracy_score, f1_score, re
 from sklearn.model_selection import StratifiedShuffleSplit
 
 # Function to fit logistic regression
-def fit_logistic_regression(df, independent_vars, dep_var):
+def fit_logistic_regression(df, independent_vars, dep_var, sample_weights=None):
     """Fits logistic regression and returns predicted probabilities"""
     X = df[independent_vars]
     X = sm.add_constant(X)  # Add intercept
     
-    model = sm.Logit(dep_var, X).fit(disp=0)  # Suppress output
+    # Fit the logistic regression model with optional sample weights
+    model = sm.Logit(dep_var, X).fit(disp=0, weights=sample_weights)  # Suppress output
     
     summary = model.summary()  # Full statsmodels summary
 
@@ -45,11 +46,11 @@ def compute_metrics(y_true, y_pred_probs, threshold=0.5):
     return auc, bal_acc, sensitivity, specificity, f1
 
 # Function for bootstrapping
-def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_var_test, n_bootstrap=1000, threshold=0.5):
+def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_var_test, n_bootstrap=1000, threshold=0.5, sample_weights=None):
     """Performs bootstrap resampling and collects all metrics"""
     
     # Fit model once and get ORs
-    model, summary, OR_results = fit_logistic_regression(df_train, independent_vars, dep_var_train)
+    model, summary, OR_results = fit_logistic_regression(df_train, independent_vars, dep_var_train, sample_weights=sample_weights)
     
     boot_auc, boot_bal_acc, boot_sens, boot_spec, boot_f1 = [], [], [], [], []
     
@@ -62,7 +63,7 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
         sample_dep_test = dep_var_test.iloc[test_index]
         
         # Get predicted probabilities for the resampled test data
-        y_pred_probs = model.predict(sm.add_constant(sample_df_test[independent_vars]))
+        y_pred_probs = model.predict(sm.add_constant(sample_df_test[independent_vars], has_constant='add'))
         
         # Compute performance metrics
         auc, bal_acc, sens, spec, f1 = compute_metrics(sample_dep_test, y_pred_probs, threshold)
@@ -89,7 +90,7 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
             "Specificity": ci(boot_spec),
             "F1-score": ci(boot_f1),
         },
-        "Arrays with bootstrapping":{
+        "Arrays with bootstrapping": {
             "AUC": boot_auc,
             "Balanced Accuracy": boot_bal_acc,
             "Sensitivity": boot_sens,

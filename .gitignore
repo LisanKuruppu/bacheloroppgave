@@ -173,8 +173,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Ignore Large CSV-files
-data/MMSE_Prompts_Test.csv
-data/MMSE_Prompts_Train.csv
-data/MMSE_Context_Prompts_Test.csv
-data/MMSE_Context_Prompts_Train.csv
+# Ignore everything in the Embeddings directory
+# except for the Embeddings folder
+Embeddings/*

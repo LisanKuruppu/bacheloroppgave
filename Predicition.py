@@ -8,7 +8,7 @@ df = pd.read_csv("data/TrainTest_Table.csv")
 
 # --- Parse first 30 prompt embeddings ---
 embeddings = []
-with open("data/MMSE_Prompts_Train.csv", "r", encoding="utf-8") as f:
+with open("data/Prompts/MMSE_Prompts_Train.csv", "r", encoding="utf-8") as f:
     raw_text = f.read()
 
 raw_entries = raw_text.split('","[')[1:]
