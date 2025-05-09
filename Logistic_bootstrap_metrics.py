@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_auc_score, balanced_accuracy_score, f1_score, recall_score, confusion_matrix, roc_curve, auc
+from sklearn.metrics import roc_auc_score, balanced_accuracy_score, f1_score, recall_score, confusion_matrix, roc_curve, auc, precision_score
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils.class_weight import compute_class_weight
 
@@ -30,6 +30,7 @@ def fit_logistic_regression(df, independent_vars, dep_var, sample_weights=None):
 
 # Function to compute metrics
 def compute_metrics(y_true, y_pred_probs, threshold=0.5):
+
     y_pred = (y_pred_probs >= threshold).astype(int)
     auc_value = roc_auc_score(y_true, y_pred_probs)
     bal_acc = balanced_accuracy_score(y_true, y_pred)
@@ -37,8 +38,9 @@ def compute_metrics(y_true, y_pred_probs, threshold=0.5):
     sensitivity = recall_score(y_true, y_pred)
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
     specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
 
-    return auc_value, bal_acc, sensitivity, specificity, f1
+    return auc_value, bal_acc, sensitivity, specificity, precision, f1
 
 # Function to find best threshold
 def find_best_threshold(y_true, y_pred_probs):
@@ -73,7 +75,7 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
         threshold = find_best_threshold(dep_var_test, y_pred_probs_full_test)
         print(f"Best Threshold found automatically: {threshold:.2f}")
 
-    boot_auc, boot_bal_acc, boot_sens, boot_spec, boot_f1 = [], [], [], [], []
+    boot_auc, boot_bal_acc, boot_sens, boot_spec, boot_prec, boot_f1 = [], [], [], [], [], []
 
     sss = StratifiedShuffleSplit(n_splits=n_bootstrap, test_size=len(df_test)-5, random_state=42)
 
@@ -83,12 +85,13 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
 
         y_pred_probs = model.predict(sm.add_constant(sample_df_test[independent_vars], has_constant='add'))
 
-        auc_value, bal_acc, sens, spec, f1 = compute_metrics(sample_dep_test, y_pred_probs, threshold)
+        auc_value, bal_acc, sens, spec, prec, f1 = compute_metrics(sample_dep_test, y_pred_probs, threshold)
 
         boot_auc.append(auc_value)
         boot_bal_acc.append(bal_acc)
         boot_sens.append(sens)
         boot_spec.append(spec)
+        boot_prec.append(prec)
         boot_f1.append(f1)
 
     def ci(data):
@@ -104,6 +107,7 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
             "Balanced Accuracy": ci(boot_bal_acc),
             "Sensitivity": ci(boot_sens),
             "Specificity": ci(boot_spec),
+            "Precision": ci(boot_prec),
             "F1-score": ci(boot_f1),
         },
         "Arrays with bootstrapping": {
@@ -111,6 +115,7 @@ def bootstrap_metrics(df_train, df_test, independent_vars, dep_var_train, dep_va
             "Balanced Accuracy": boot_bal_acc,
             "Sensitivity": boot_sens,
             "Specificity": boot_spec,
+            "Precision": boot_prec,
             "F1-score": boot_f1,
         },
         "True Labels": dep_var_test,
