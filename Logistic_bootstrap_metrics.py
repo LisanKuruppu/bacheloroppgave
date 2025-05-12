@@ -148,7 +148,7 @@ def plot_roc_curve(y_true, y_pred_probs, title='ROC Curve'):
     roc_auc = auc(fpr, tpr)
 
     plt.figure(figsize=(7, 6))
-    plt.plot(fpr, tpr, lw=2, label=f'AUC = {roc_auc:.3f}')
+    plt.plot(fpr, tpr, lw=2, label=f'AUC = {roc_auc:.4f}')
     plt.plot([0, 1], [0, 1], color='gray', linestyle='--', lw=1)
 
     plt.xlim([-0.02, 1.02])
@@ -156,7 +156,7 @@ def plot_roc_curve(y_true, y_pred_probs, title='ROC Curve'):
 
     plt.xlabel('False Positive Rate', fontsize=14)
     plt.ylabel('True Positive Rate', fontsize=14)
-    plt.title(f"{title}\n(AUC = {roc_auc:.3f})", fontsize=16)
+    plt.title(f"{title}\n(AUC = {roc_auc:.4f})", fontsize=16)
     plt.legend(loc='lower right', fontsize=12)
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.tight_layout()
